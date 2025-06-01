@@ -47,6 +47,13 @@
       width: 122px;
     }
   </style>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "1757d22b73244d118287aa0c1e8ae77b"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
 </head>
 
 <body>
@@ -88,19 +95,105 @@
   </main>
 
   <script>
+    // Part 4
+    class CalculationError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "CalculationError";
+      }
+    }
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      const output = document.querySelector('output');
+      const firstNum = document.querySelector('#first-num').value;
+      const secondNum = document.querySelector('#second-num').value;
+      const operator = document.querySelector('#operator').value;
+      //output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      //Part 3
+      try {
+        // Throw an error if either input is missing
+        if (!firstNum || !secondNum) {
+          throw new Error("You must enter both numbers.");
+        }
+        
+        //Part 4
+        if (operator === "/" && Number(secondNum) === 0) {
+          throw new CalculationError("Cannot divide by zero.");
+        }
+        const result = eval(`${firstNum} ${operator} ${secondNum}`);
+
+        if (isNaN(result)) {
+          throw new Error("That operation is not valid.");
+        }
+
+        output.innerHTML = result;
+      } catch (err) {
+        if (err instanceof CalculationError) {
+          console.error("Custom Calculation Error:", err.message);
+        } else {
+        console.error("Caught error:", err.message);
+        }
+        output.innerHTML = "Error!";
+      } finally {
+        console.log("Calculation attempted.");
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
+    // Part 2
+    const [
+      logBtn, errorBtn, countBtn, warnBtn, assertBtn, clearBtn,
+      dirBtn, dirxmlBtn, groupStartBtn, groupEndBtn, tableBtn,
+      startTimerBtn, endTimerBtn, traceBtn, triggerErrorBtn
+    ] = errorBtns;
+
+    const demoData = { name: "Lit", role: "Student", age: 20 };
+
+
+    logBtn.addEventListener('click', () => console.log("Console Log Example:", demoData));
+    errorBtn.addEventListener('click', () => console.error("Console Error Example"));
+    countBtn.addEventListener('click', () => console.count("Count Label"));
+    warnBtn.addEventListener('click', () => console.warn("Console Warning!"));
+    assertBtn.addEventListener('click', () => console.assert(false, "Assertion Failed Example"));
+    clearBtn.addEventListener('click', () => console.clear());
+    dirBtn.addEventListener('click', () => console.dir(document.body));
+    dirxmlBtn.addEventListener('click', () => console.dirxml(document));
+    groupStartBtn.addEventListener('click', () => {
+      console.group("Start Group");
+      console.log("Grouped Message");
+    });
+    groupEndBtn.addEventListener('click', () => console.groupEnd());
+    tableBtn.addEventListener('click', () => {
+      console.table([
+        { item: "Apple", type: "Fruit" },
+        { item: "Carrot", type: "Vegetable" }
+      ]);
+    });
+    startTimerBtn.addEventListener('click', () => console.time("Timer Demo"));
+    endTimerBtn.addEventListener('click', () => console.timeEnd("Timer Demo"));
+    traceBtn.addEventListener('click', () => console.trace("Trace Example"));
+
+    // Part 5
+    triggerErrorBtn.addEventListener('click', () => {
+      // Purposely call a function that doesn't exist
+      notDefinedFunction();
+    });
+
+
+
+
+    // Part 5
+    window.onerror = function (message, source, lineno, colno, error) {
+    console.log("Global error caught!");
+    console.log("Message:", message);
+    console.log("Source:", source);
+    console.log("Line:", lineno);
+    console.log("Column:", colno);
+    console.log("Error object:", error);
+  };
     // You may move this JS to another file if you wish
   </script>
 </body>
